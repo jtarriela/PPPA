@@ -1,0 +1,66 @@
+==============================================================================
+PPPA VERIFICATION REPORT
+==============================================================================
+
+Generated: 2026-01-08 14:14:07
+Package: fast_hv v0.1.0
+Algorithm: PPPA (Partial Precision Partial Approximation)
+Reference: Tang et al. (2020) - Information Sciences, 509, 320-342
+
+------------------------------------------------------------------------------
+SUMMARY
+------------------------------------------------------------------------------
+Tests with pymoo reference: 7
+Maximum relative error: 0.1224%
+Average relative error: 0.0297%
+Status: PASS (threshold: 5%)
+
+------------------------------------------------------------------------------
+DETAILED RESULTS
+------------------------------------------------------------------------------
+
+    N   M        fast_hv  time(s)          pymoo  time(s)    error
+------------------------------------------------------------------------------
+  100   3     0.45156163   0.0208     0.45156181   0.0001    0.00%
+  100   5     0.05878055   0.0386     0.05879366   0.0004    0.02%
+  100   8     0.00020829   0.9688     0.00020854   0.8111    0.12%
+ 1000   3     0.50004117   0.0478     0.49996081   0.0003    0.02%
+ 1000   5     0.09583940   0.2956     0.09586449   0.1139    0.03%
+ 1000   8     0.00131765   2.7669            N/A      N/A      N/A
+ 1000  10     0.00002543   9.8561            N/A      N/A      N/A
+ 1000  13     0.00000002  30.6493            N/A      N/A      N/A
+10000   3     0.51641519   0.4970     0.51633679   0.0026    0.02%
+10000   5     0.12529685   2.9244     0.12529332  49.7604      N/A
+10000   8     0.00308094  10.8291            N/A      N/A      N/A
+10000  10     0.00009291  21.2882            N/A      N/A      N/A
+10000  13     0.00000011  61.3982            N/A      N/A      N/A
+100000   3     0.52134430   6.0762     0.52131555   0.0315    0.01%
+100000   5     0.14245309  28.1076            N/A      N/A      N/A
+100000  10     0.00024141 183.8113            N/A      N/A      N/A
+100000  13     0.00000064 295.3823            N/A      N/A      N/A
+
+------------------------------------------------------------------------------
+NOTES
+------------------------------------------------------------------------------
+
+1. fast_hv uses PPPA algorithm with max_depth=6, n_samples=100000
+2. pymoo uses HSO (Hypervolume by Slicing Objectives) exact algorithm
+3. pymoo comparison only for M<=8 (exact algorithm is impractical for M>8)
+4. Spherical test instances generated using same method as testCpp.m
+5. Error < 5% is acceptable for approximate hypervolume computation
+
+------------------------------------------------------------------------------
+MATLAB MEX REFERENCE
+------------------------------------------------------------------------------
+
+The original MATLAB MEX files (mexPPPA.cpp) could not be compiled due to:
+  - Windows-specific includes (WINDOWS.H)
+  - min/max macro conflicts with C++ standard library
+
+However, the fast_hv implementation follows the same PPPA algorithm and
+shows excellent agreement with pymoo exact hypervolume (< 1% error for
+dimensions tested against reference).
+
+==============================================================================
+END OF REPORT
+==============================================================================

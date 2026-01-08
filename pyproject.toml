@@ -1,0 +1,23 @@
+[build-system]
+requires = ["scikit-build-core>=0.5", "pybind11>=2.11"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "fast-hv"
+version = "0.1.0"
+description = "Fast hypervolume approximation using PPPA algorithm (Tang et al. 2020)"
+readme = "docs/architecture.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [
+    {name = "PPPA Implementation"}
+]
+dependencies = ["numpy>=1.20"]
+
+[project.optional-dependencies]
+test = ["pytest", "pymoo>=0.6"]
+dev = ["pytest", "pymoo>=0.6", "black", "mypy"]
+
+[tool.scikit-build]
+wheel.packages = ["src/fast_hv"]
+cmake.build-type = "Release"
