@@ -1,0 +1,25 @@
+1. Basic introduction:
+
+PPPA approximates the hypervolume metric for n points within the bounds, with near-linear complexity.
+
+The problem statement and the algorithm's working principle are illustrated in the diagrams.
+
+
+
+2. Usage: in MATLAB, run
+mexPPPA(points, bounds, Samp=10000000, numK=6)
+
+Where:
+points is an n-by-m matrix: an m-dimensional population of size n to evaluate.
+
+bounds is a 1-by-m matrix: measurement bounds.
+
+Samp is the number of unit sample points, default 10,000,000.
+
+numK is the maximum split depth, default 6.
+
+
+
+3. Compile command:
+
+In MATLAB, run: mex mexPPPA.cpp
