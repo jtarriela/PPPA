@@ -1,25 +1,41 @@
-1. Basic introduction:
+PPPA quick guide
 
-PPPA approximates the hypervolume metric for n points within the bounds, with near-linear complexity.
+PPPA computes an approximate hypervolume indicator for multi-objective point sets.
+It is packaged as the `fast_hv` Python module and is intended for Linux and WSL2.
 
-The problem statement and the algorithm's working principle are illustrated in the diagrams.
+Native Windows is not supported. Use Linux or WSL2 on Windows.
 
+Install
 
+From the repository root on Linux or in a WSL2 shell:
 
-2. Usage: in MATLAB, run
-mexPPPA(points, bounds, Samp=10000000, numK=6)
+    python -m pip install -U pip
+    python -m pip install -e .
 
-Where:
-points is an n-by-m matrix: an m-dimensional population of size n to evaluate.
+If you want a non-editable install instead:
 
-bounds is a 1-by-m matrix: measurement bounds.
+    python -m pip install .
 
-Samp is the number of unit sample points, default 10,000,000.
+Manual CMake build on Linux
 
-numK is the maximum split depth, default 6.
+    python -m pip install -U pip
+    python -m pip install scikit-build-core pybind11 numpy
+    cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -Dpybind11_DIR="$(python -m pybind11 --cmakedir)"
+    cmake --build build -j
 
+Smoke test
 
+    python tests/quick_test.py
 
-3. Compile command:
+Minimal Python example
 
-In MATLAB, run: mex mexPPPA.cpp
+```python
+import numpy as np
+import fast_hv
+
+points = np.array([[0.2, 0.3], [0.4, 0.1]], dtype=np.float64)
+ref = np.array([1.0, 1.0], dtype=np.float64)
+
+hv = fast_hv.compute(points, ref, max_depth=4, n_samples=1000)
+print(hv)
+```

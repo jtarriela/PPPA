@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.15)
 project(fast_hv LANGUAGES CXX)
 
+if(WIN32)
+    message(FATAL_ERROR "PPPA does not support native Windows builds. Use Linux or WSL2 instead.")
+endif()
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 

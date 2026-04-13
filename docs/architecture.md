@@ -2,9 +2,9 @@
 
 ## Overview
 
-Build a production-grade C++17 PPPA (Partial Precision and Partial Approximation) hypervolume library as a pip-installable Python package, integrated with gdwh_fsm's genetic algorithm optimizer and pymoo.
+Build a production-grade C++17 PPPA (Partial Precision and Partial Approximation) hypervolume library as a pip-installable Python package, integrated with gdwh_fsm's genetic algorithm optimizer and pymoo. Supported development targets are Linux and WSL2; native Windows is not supported.
 
-**Target Environment:** HPC head node, Intel Skylake / AMD EPYC (x86-64-v3)
+**Target Environment:** Linux HPC head node or WSL2 on Windows, Intel Skylake / AMD EPYC (x86-64-v3)
 **Parallelism:** OpenMP only (shared memory, no MPI)
 **Python Integration:** pybind11 with zero-copy NumPy array access
 
@@ -302,7 +302,7 @@ dev = ["pytest", "pymoo>=0.6", "black", "mypy"]
 ### 5.3 Installation
 
 ```bash
-# From PPPA directory
+# From the PPPA directory on Linux or WSL2
 pip install .
 
 # Or in development mode
@@ -311,6 +311,8 @@ pip install -e .
 # Verify installation
 python -c "import fast_hv; print(fast_hv.compute.__doc__)"
 ```
+
+On native Windows, stop at the CMake guard and use Linux or WSL2 instead.
 
 ---
 

@@ -3,7 +3,7 @@ import os
 # CONFIGURATION
 OUTPUT_FILE = "codebase_context.txt"
 # Folders to ignore
-IGNORE_DIRS = {'.git', '__pycache__', 'node_modules', 'dist', 'build', '.venv', 'env','materiel_f.dSYM','.claude','.github','docs/source', 'sabre','tests','verification'}
+IGNORE_DIRS = {'.git', '__pycache__', 'node_modules', 'dist', 'build', '.venv', 'env','materiel_f.dSYM','.github','docs/source', 'sabre','tests','verification'}
 # Extensions to ignore
 IGNORE_EXTENSIONS = {'.png', '.jpg', '.jpeg', '.gif', '.ico', '.pyc', '.pdf', '.exe', '.bin', '.lock', '.DAT', '.sh','.99','.log','.pdf'}
 
@@ -21,7 +21,7 @@ def is_text_file(filepath):
 
 def flatten_repo():
     with open(OUTPUT_FILE, 'w', encoding='utf-8') as outfile:
-        # Write a preamble for the LLM
+        # Write a preamble for the repository context bundle
         outfile.write("Below is the flattened source code for the repository.\n")
         outfile.write("Each file is delimited by '--- START OF FILE: [path] ---' and '--- END OF FILE ---'.\n\n")
 
