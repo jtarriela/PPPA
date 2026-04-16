@@ -1,0 +1,106 @@
+Offline install from the wheelhouse
+===================================
+
+Use this wheelhouse with Python 3.10.x on Linux x86_64:
+
+    wheelhouse/cp310
+
+Do not use these wheels with Python 3.11 or 3.12. Check first:
+
+    python --version
+
+Do not run:
+
+    pip install wheelhouse/cp310/*
+
+Install by package name and let pip resolve dependencies from the local
+wheelhouse:
+
+    python -m pip install --no-index --find-links wheelhouse/cp310 PACKAGE_NAME
+
+
+Create a venv
+-------------
+
+    cd /path/to/transition
+    python3.10 -m venv .venv-gdwh
+    source .venv-gdwh/bin/activate
+
+    python -m pip install --no-index --find-links wheelhouse/cp310 --upgrade pip setuptools wheel
+
+    python -m pip install --no-index --find-links wheelhouse/cp310 \
+      megadeth fast-hv gfs-physics \
+      gdwh gdwh-workspace gwdh-core gwdh-datalake gwdh-optim \
+      gwdh-hpc gwdh-training gwdh-classifier
+
+Verify the C++ extensions:
+
+    python -c "import megadeth; import megadeth_accelerator; import fast_hv; import gfs_physics; print(megadeth.has_accelerator())"
+
+If importing top-level gdwh fails with an MPI error, load MPI first:
+
+    module load openmpi
+    python -c "import gdwh; print('gdwh ok')"
+
+
+Create a conda env
+------------------
+
+If conda has Python cached locally:
+
+    conda create --offline -n gdwh310 python=3.10 pip
+    conda activate gdwh310
+
+Then install from the wheelhouse:
+
+    cd /path/to/transition
+
+    python -m pip install --no-index --find-links wheelhouse/cp310 --upgrade pip setuptools wheel
+
+    python -m pip install --no-index --find-links wheelhouse/cp310 \
+      megadeth fast-hv gfs-physics \
+      gdwh gdwh-workspace gwdh-core gwdh-datalake gwdh-optim \
+      gwdh-hpc gwdh-training gwdh-classifier
+
+
+glibc and compiler runtime notes
+--------------------------------
+
+The C++ wheels in wheelhouse/cp310 were rebuilt with portable x86-64 settings
+inside a manylinux2014 container. Their compiled extension modules require only
+old glibc symbols, up to GLIBC_2.16. This avoids errors such as:
+
+    GLIBC_2.29 not found
+
+If you still see a libgomp, libstdc++, or OpenMP runtime error, load the HPC
+compiler runtime module before running Python:
+
+    module load gcc
+    python -c "import megadeth_accelerator; print('accelerator ok')"
+
+For MPI jobs or anything that imports gdwh's MPI path, load MPI too:
+
+    module load openmpi
+    python -c "import gdwh; print('gdwh ok')"
+
+
+Building from source on HPC
+---------------------------
+
+You should not need to build from source if wheelhouse/cp310 works.
+
+If you do need to rebuild on HPC, use the active Python 3.10 interpreter with
+headers, a C++17 compiler, and the local build-tool wheels:
+
+    module load gcc
+    module load python/3.10
+
+    python -m venv .venv-build
+    source .venv-build/bin/activate
+
+    python -m pip install --no-index --find-links wheelhouse/cp310 \
+      pip setuptools wheel scikit-build-core pybind11 cmake ninja
+
+    python -m pip wheel --no-index --find-links wheelhouse/cp310 \
+      --wheel-dir wheelhouse/cp310 ./sabre ./PPPA ./gfsm/gfs-cpp
+
