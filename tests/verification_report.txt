@@ -14,6 +14,7 @@ Tests with pymoo reference: 7
 Maximum relative error: 0.1224%
 Average relative error: 0.0297%
 Status: PASS (threshold: 5%)
+Parallel CPU Cores (PPPA): 6
 
 ------------------------------------------------------------------------------
 DETAILED RESULTS
