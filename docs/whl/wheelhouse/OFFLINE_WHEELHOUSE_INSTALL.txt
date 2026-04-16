@@ -1,0 +1,150 @@
+Offline install from the wheelhouse
+===================================
+
+This repo has a Python 3.10 wheelhouse at:
+
+    wheelhouse/cp310
+
+Use it only with Python 3.10.x. Do not install cp310 wheels into Python 3.11
+or Python 3.12 environments.
+
+
+Quick checks
+------------
+
+On the offline/HPC machine:
+
+    python --version
+
+If it is Python 3.10.x, use wheelhouse/cp310.
+
+Do not run:
+
+    pip install wheelhouse/cp310/*
+
+Instead, point pip at the local wheel directory and install by package name.
+This lets pip resolve dependencies from the wheelhouse.
+
+
+Option A: create a venv
+-----------------------
+
+Copy the repo or at least wheelhouse/cp310 to the offline machine, then:
+
+    cd /path/to/transition
+    python3.10 -m venv .venv-gdwh
+    source .venv-gdwh/bin/activate
+
+    python -m pip install --no-index --find-links wheelhouse/cp310 --upgrade pip setuptools wheel
+
+    python -m pip install --no-index --find-links wheelhouse/cp310 \
+      gdwh gdwh-workspace gwdh-core gwdh-datalake gwdh-optim \
+      gwdh-hpc gwdh-training gwdh-classifier \
+      megadeth fast-hv gfs-physics
+
+Verify:
+
+    python -c "import megadeth; import megadeth_accelerator; import fast_hv; import gfs_physics; import gwdh_core; print('ok')"
+
+If you need to import the top-level gdwh package, load the cluster MPI module
+first because gdwh imports mpi4py:
+
+    module load openmpi
+    python -c "import gdwh; print('gdwh ok')"
+
+
+Option B: create a conda env
+----------------------------
+
+If the HPC machine has conda packages cached locally:
+
+    conda create --offline -n gdwh310 python=3.10 pip
+    conda activate gdwh310
+
+If conda cannot create the env offline, create the conda env on a connected
+machine or ask the HPC admins for a Python 3.10 module/env. Once the env exists:
+
+    cd /path/to/transition
+
+    python -m pip install --no-index --find-links wheelhouse/cp310 --upgrade pip setuptools wheel
+
+    python -m pip install --no-index --find-links wheelhouse/cp310 \
+      gdwh gdwh-workspace gwdh-core gwdh-datalake gwdh-optim \
+      gwdh-hpc gwdh-training gwdh-classifier \
+      megadeth fast-hv gfs-physics
+
+Verify:
+
+    python -c "import megadeth; import megadeth_accelerator; import fast_hv; import gfs_physics; import gwdh_core; print('ok')"
+
+If you need to import the top-level gdwh package, load the cluster MPI module
+first because gdwh imports mpi4py:
+
+    module load openmpi
+    python -c "import gdwh; print('gdwh ok')"
+
+
+C++ package status
+------------------
+
+The Python 3.10 wheelhouse has the Python/runtime dependency wheels,
+pure-Python local package wheels, build-tool wheels, and these C++ extension
+wheels:
+
+    megadeth
+    fast-hv
+    gfs-physics
+
+Install them the same way:
+
+    python -m pip install --no-index --find-links wheelhouse/cp310 \
+      megadeth fast-hv gfs-physics
+
+
+Building C++ packages offline on HPC
+------------------------------------
+
+If you must build the C++ packages on the HPC system from source instead of
+installing prebuilt wheels, the environment needs:
+
+    Python 3.10 with development headers for the exact interpreter
+    a C++17 compiler, usually from a gcc module
+    OpenMP runtime, usually provided by the gcc module
+    the local wheelhouse with scikit-build-core, pybind11, cmake, and ninja
+
+Example shape:
+
+    module load gcc
+    module load python/3.10
+
+    python -m venv .venv-build
+    source .venv-build/bin/activate
+
+    python -m pip install --no-index --find-links wheelhouse/cp310 \
+      pip setuptools wheel scikit-build-core pybind11 cmake ninja
+
+    python -m pip wheel --no-index --find-links wheelhouse/cp310 \
+      --wheel-dir wheelhouse/cp310 ./sabre ./PPPA ./gfsm/gfs-cpp
+
+
+Do you need gcc and OpenMPI modules?
+------------------------------------
+
+For installing already-built wheels:
+
+    gcc compiler: no
+    gcc runtime libraries: maybe
+    OpenMPI: only if using MPI/mpi4py
+
+For building the C++ wheels from source:
+
+    gcc compiler: yes, or another compatible C++17 compiler
+    OpenMPI: only needed for MPI features or rebuilding mpi4py
+
+For MPI jobs, load the cluster's MPI module before running Python, for example:
+
+    module load openmpi
+    conda activate gdwh310
+
+If mpi4py fails to import or cannot find the cluster MPI runtime, rebuild
+mpi4py against the HPC MPI stack rather than relying on a generic wheel.
